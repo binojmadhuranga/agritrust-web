@@ -1,36 +1,184 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌱 AgriTrust Lanka – Frontend
 
-## Getting Started
+AgriTrust Lanka is a modern digital platform designed to improve transparency, trust, and efficiency in the Sri Lankan agricultural ecosystem. This frontend application is built using **Next.js** and provides a user-friendly interface for farmers, buyers, and administrators to interact with the AgriTrust platform.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Tech Stack
+
+* **Framework:** Next.js (App Router)
+* **Styling:** Tailwind CSS
+* **HTTP Client:** Axios
+* **Icons:** React Icons
+* **Utility Library:** clsx
+
+---
+
+## 📁 Project Structure
+
+```
+src
+ ┣ app              # Next.js pages and routing
+ ┣ components       # Reusable UI components
+ ┣ services         # API communication logic
+ ┣ routes           # Route constants
+ ┣ utils            # Helper functions
+ ┣ assets           # Images, logos, and static files
+ ┗ styles           # Custom styles
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Installation Guide
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1️⃣ Clone Repository
 
-## Learn More
+```
+git clone <repository-url>
+cd agritrust-frontend
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2️⃣ Install Dependencies
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+npm install
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3️⃣ Setup Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a `.env.local` file in the root directory.
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:8080/api
+```
+
+---
+
+### 4️⃣ Run Development Server
+
+```
+npm run dev
+```
+
+Application will run on:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 🌐 Features
+
+* User Authentication (Login / Registration)
+* Farmer Dashboard
+* Buyer Dashboard
+* Document Verification
+* Product Listings
+* Admin Management Panel
+* Secure API Integration
+* Responsive UI Design
+
+---
+
+## 🔗 API Integration
+
+Axios instance is configured inside:
+
+```
+src/services/api.js
+```
+
+It automatically connects to the backend using environment variables.
+
+---
+
+## 🧭 Routing
+
+Route constants are managed inside:
+
+```
+src/routes/index.js
+```
+
+This helps maintain consistent and scalable routing across the application.
+
+---
+
+## 🎨 Styling
+
+This project uses **Tailwind CSS** for styling.
+Custom theme colors can be modified inside:
+
+```
+tailwind.config.js
+```
+
+---
+
+## 🧩 Reusable Components
+
+Reusable UI components such as navigation bars, buttons, and layouts are stored in:
+
+```
+src/components
+```
+
+---
+
+## 📦 Essential Dependencies
+
+| Package     | Purpose               |
+| ----------- | --------------------- |
+| axios       | Backend communication |
+| react-icons | UI icons              |
+| clsx        | Conditional styling   |
+
+---
+
+## 📌 Best Practices Followed
+
+* Separation of UI and business logic
+* Reusable component architecture
+* Environment-based configuration
+* Modular folder structure
+* Scalable routing management
+
+---
+
+## 🔮 Future Improvements
+
+* Role-based access control
+* State management integration (Zustand / Redux)
+* Form validation using Yup or Zod
+* Performance optimization
+* Real-time notifications
+* Progressive Web App (PWA) support
+
+---
+
+## 🤝 Contribution
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit changes
+4. Submit a Pull Request
+
+---
+
+## 📄 License
+
+This project is developed for educational and development purposes. Licensing can be updated based on production deployment requirements.
+
+---
+
+## 👨‍💻 Developed For
+
+**AgriTrust Lanka**
+Digital platform promoting trusted agricultural trade and transparency across Sri Lanka.
+
+---
