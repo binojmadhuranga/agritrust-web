@@ -1,4 +1,4 @@
-# 🌱 AgriTrust Lanka – Frontend
+# 🌱 AgriTrust Lanka – Web
 
 AgriTrust Lanka is a modern digital platform designed to improve transparency, trust, and efficiency in the Sri Lankan agricultural ecosystem. This frontend application is built using **Next.js** and provides a user-friendly interface for farmers, buyers, and administrators to interact with the AgriTrust platform.
 
