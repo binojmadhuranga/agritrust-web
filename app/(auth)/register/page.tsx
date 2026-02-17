@@ -1,20 +1,34 @@
 'use client';
 
-import { useState } from 'react';
-import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiPhone } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/app/hooks/useAppDispatch';
+import { useAppSelector } from '@/app/hooks/useAppSelector';
+import { registerUser } from '@/app/features/authThunks';
+import { clearError } from '@/app/features/authSlice';
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    phone: '',
     password: '',
     confirmPassword: '',
     agreeToTerms: false,
   });
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -26,6 +40,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    dispatch(clearError());
     
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
@@ -38,8 +53,22 @@ export default function RegisterPage() {
       return;
     }
 
-    console.log('Register:', formData);
-    // Add your registration logic here
+    try {
+      await dispatch(registerUser({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      })).unwrap();
+      
+      // Registration successful
+      setSuccess(true);
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
+    } catch (err) {
+      // Error is handled by Redux
+      console.error('Registration failed:', err);
+    }
   };
 
   return (
@@ -63,6 +92,18 @@ export default function RegisterPage() {
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
               Create Account
             </h2>
+
+            {error && (
+              <div className="p-3 mb-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="p-3 mb-4 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-800 text-green-700 dark:text-green-400 rounded-lg text-sm">
+                Registration successful! Redirecting to login...
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Full Name Field */}
@@ -111,30 +152,6 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all"
                     placeholder="you@example.com"
-                  />
-                </div>
-              </div>
-
-              {/* Phone Number Field */}
-              <div>
-                <label 
-                  htmlFor="phone" 
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Phone Number (Optional)
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiPhone className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all"
-                    placeholder="+1 (555) 000-0000"
                   />
                 </div>
               </div>
@@ -243,9 +260,10 @@ export default function RegisterPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+                disabled={isLoading}
+                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
               >
-                Create Account
+                {isLoading ? 'Creating Account...' : 'Create Account'}
               </button>
             </form>
 

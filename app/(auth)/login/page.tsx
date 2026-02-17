@@ -1,19 +1,46 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/app/hooks/useAppDispatch';
+import { useAppSelector } from '@/app/hooks/useAppSelector';
+import { loginUser } from '@/app/features/authThunks';
+import { clearError } from '@/app/features/authSlice';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login:', { email, password, rememberMe });
-    // Add your login logic here
+    dispatch(clearError());
+    
+    try {
+      await dispatch(loginUser({ email, password })).unwrap();
+      // Successful login - redirect handled by useEffect
+    } catch (err) {
+      // Error is handled by Redux
+      console.error('Login failed:', err);
+    }
   };
 
   return (
@@ -37,6 +64,12 @@ export default function LoginPage() {
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
               Sign In
             </h2>
+
+            {error && (
+              <div className="p-3 mb-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
@@ -126,9 +159,10 @@ export default function LoginPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+                disabled={isLoading}
+                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
               >
-                Sign In
+                {isLoading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
 
@@ -198,15 +232,8 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
-
-        {/* Footer */}
-        <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-          Protected by reCAPTCHA and subject to the{' '}
-          <Link href="/privacy" className="text-green-600 hover:text-green-500 dark:text-green-400">
-            Privacy Policy
-          </Link>
-        </p>
       </div>
     </div>
   );
 }
+
