@@ -1,0 +1,59 @@
+import axiosInstance from './axiosConfig';
+
+export interface RegisterRequest {
+  fullName: string;
+  email: string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  message: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  expiresAt: string;
+}
+
+export const authService = {
+  register: async (data: RegisterRequest): Promise<RegisterResponse> => {
+    const response = await axiosInstance.post<RegisterResponse>('/auth/register', data);
+    return response.data;
+  },
+
+  login: async (data: LoginRequest): Promise<LoginResponse> => {
+    const response = await axiosInstance.post<LoginResponse>('/auth/login', data);
+    
+    // Store token and expiry in localStorage
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('tokenExpiry', response.data.expiresAt);
+    }
+    
+    return response.data;
+  },
+
+  logout: () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpiry');
+  },
+
+  getToken: (): string | null => {
+    return localStorage.getItem('token');
+  },
+
+  isAuthenticated: (): boolean => {
+    const token = localStorage.getItem('token');
+    const expiry = localStorage.getItem('tokenExpiry');
+    
+    if (!token || !expiry) return false;
+    
+    // Check if token is expired
+    return new Date(expiry) > new Date();
+  },
+};
