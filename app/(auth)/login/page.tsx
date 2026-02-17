@@ -198,15 +198,8 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
-
-        {/* Footer */}
-        <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-          Protected by reCAPTCHA and subject to the{' '}
-          <Link href="/privacy" className="text-green-600 hover:text-green-500 dark:text-green-400">
-            Privacy Policy
-          </Link>
-        </p>
       </div>
     </div>
   );
 }
+
