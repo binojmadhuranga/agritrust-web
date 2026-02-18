@@ -21,6 +21,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'User',
     agreeToTerms: false,
   });
 
@@ -30,8 +31,9 @@ export default function RegisterPage() {
     };
   }, [dispatch]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = 'checked' in e.target ? e.target.checked : undefined;
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
@@ -58,6 +60,7 @@ export default function RegisterPage() {
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
+        role: formData.role,
       })).unwrap();
       
       // Registration successful
@@ -65,9 +68,13 @@ export default function RegisterPage() {
       setTimeout(() => {
         router.push('/login');
       }, 2000);
-    } catch (err) {
+    } catch (err: any) {
       // Error is handled by Redux
       console.error('Registration failed:', err);
+      console.error('Error details:', {
+        message: err?.message,
+        stack: err?.stack,
+      });
     }
   };
 
@@ -154,6 +161,28 @@ export default function RegisterPage() {
                     placeholder="you@example.com"
                   />
                 </div>
+              </div>
+
+              {/* Role Field */}
+              <div>
+                <label 
+                  htmlFor="role" 
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Role
+                </label>
+                <select
+                  id="role"
+                  name="role"
+                  required
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all"
+                >
+                  <option value="User">User</option>
+                  <option value="Farmer">Farmer</option>
+                  <option value="Vendor">Vendor</option>
+                </select>
               </div>
 
               {/* Password Field */}

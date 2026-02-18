@@ -7,10 +7,6 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  // Add this to handle self-signed certificates in development
-  httpsAgent: {
-    rejectUnauthorized: false,
-  } as any,
 });
 
 // Request interceptor to add token to headers

@@ -4,6 +4,7 @@ export interface RegisterRequest {
   fullName: string;
   email: string;
   password: string;
+  role: string;
 }
 
 export interface RegisterResponse {
@@ -22,8 +23,16 @@ export interface LoginResponse {
 
 export const authService = {
   register: async (data: RegisterRequest): Promise<RegisterResponse> => {
-    const response = await axiosInstance.post<RegisterResponse>('/auth/register', data);
-    return response.data;
+    console.log('Attempting registration with data:', data);
+    console.log('API URL:', axiosInstance.defaults.baseURL + '/auth/register');
+    try {
+      const response = await axiosInstance.post<RegisterResponse>('/auth/register', data);
+      console.log('Registration successful:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('authService.register error:', error);
+      throw error;
+    }
   },
 
   login: async (data: LoginRequest): Promise<LoginResponse> => {
