@@ -12,17 +12,19 @@ import { clearError } from '@/app/features/authSlice';
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isLoading, error, isAuthenticated, role } = useAppSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/dashboard');
+    if (isAuthenticated && role) {
+      // Navigate to dashboard based on role
+      const dashboardPath = `/dashboards/${role.toLowerCase()}`;
+      router.push(dashboardPath);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, role, router]);
 
   useEffect(() => {
     return () => {

@@ -7,6 +7,7 @@ const initialState: AuthState = {
   user: null,
   token: typeof window !== 'undefined' ? authService.getToken() : null,
   tokenExpiry: typeof window !== 'undefined' ? localStorage.getItem('tokenExpiry') : null,
+  role: typeof window !== 'undefined' ? localStorage.getItem('role') : null,
   isLoading: false,
   error: null,
   isAuthenticated: typeof window !== 'undefined' ? authService.isAuthenticated() : false,
@@ -33,12 +34,14 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.token = action.payload.token;
       state.tokenExpiry = action.payload.expiresAt;
+      state.role = action.payload.role;
       state.isAuthenticated = true;
       state.error = null;
       
       // Extract user info from token or set basic info
       state.user = {
         email: '', // You can decode JWT token to get email
+        role: action.payload.role,
       };
     });
     builder.addCase(loginUser.rejected, (state, action) => {
@@ -66,6 +69,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.tokenExpiry = null;
+      state.role = null;
       state.isAuthenticated = false;
       state.error = null;
     });

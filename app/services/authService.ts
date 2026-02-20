@@ -18,6 +18,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
+  role: string;
   expiresAt: string;
 }
 
@@ -38,10 +39,11 @@ export const authService = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     const response = await axiosInstance.post<LoginResponse>('/auth/login', data);
     
-    // Store token and expiry in localStorage
+    // Store token, role and expiry in localStorage
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('tokenExpiry', response.data.expiresAt);
+      localStorage.setItem('role', response.data.role);
     }
     
     return response.data;
@@ -50,10 +52,15 @@ export const authService = {
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('role');
   },
 
   getToken: (): string | null => {
     return localStorage.getItem('token');
+  },
+
+  getRole: (): string | null => {
+    return localStorage.getItem('role');
   },
 
   isAuthenticated: (): boolean => {
