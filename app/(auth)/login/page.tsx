@@ -17,12 +17,15 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
+    // Check authentication status on mount
     if (isAuthenticated && role) {
-      // Navigate to dashboard based on role
       const dashboardPath = `/dashboards/${role.toLowerCase()}`;
       router.push(dashboardPath);
+    } else {
+      setIsChecking(false);
     }
   }, [isAuthenticated, role, router]);
 
@@ -44,6 +47,18 @@ export default function LoginPage() {
       console.error('Login failed:', err);
     }
   };
+
+  // Don't render login form if user is already authenticated
+  if (isChecking || isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 p-4">
