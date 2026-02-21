@@ -121,7 +121,7 @@ export default function RegisterPage() {
 
           {/* Step 1: Basic Information */}
           {step === 1 && (
-            <div className="space-y-4">
+            <div key="step-1" className="space-y-4 animate-slideInLeft">
               {/* Full Name Field */}
               <div>
                 <label 
@@ -218,7 +218,7 @@ export default function RegisterPage() {
 
           {/* Step 2: Password Setup */}
           {step === 2 && (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form key="step-2" onSubmit={handleSubmit} className="space-y-4 animate-slideInRight">
               {/* Password Field */}
               <div>
                 <label 

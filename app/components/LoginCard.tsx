@@ -9,7 +9,7 @@ interface LoginCardProps {
 
 export default function LoginCard({ children, title, subtitle }: LoginCardProps) {
     return (
-        <div className="w-full max-w-md lg:w-[40vw] lg:max-w-none lg:h-screen bg-white/90 dark:bg-gray-600/90 backdrop-blur-sm lg:rounded-none rounded-2xl shadow-2xl p-8 opacity-94 flex flex-col justify-center">
+        <div className="w-full max-w-md lg:w-[40vw] lg:max-w-none lg:h-screen bg-white/90 dark:bg-gray-600/90 backdrop-blur-sm lg:rounded-none rounded-2xl shadow-2xl p-8 opacity-94 flex flex-col justify-center animate-fadeInLeft">
             <div className="mb-6">
                 {/* Logo */}
                 <div className="mb-12 flex justify-center">
