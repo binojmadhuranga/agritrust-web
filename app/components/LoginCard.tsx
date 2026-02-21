@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 
-interface RegisterCardProps {
+interface LoginCardProps {
   children: ReactNode;
   title: string;
   subtitle?: string;
 }
 
-export default function RegisterCard({ children, title, subtitle }: RegisterCardProps) {
+export default function LoginCard({ children, title, subtitle }: LoginCardProps) {
   return (
     <div className="w-full max-w-md lg:w-[40vw] lg:max-w-none lg:h-screen bg-white/90 dark:bg-gray-600/90 backdrop-blur-sm lg:rounded-none rounded-2xl shadow-2xl p-8 opacity-90 flex flex-col justify-center">
       <div className="mb-6">

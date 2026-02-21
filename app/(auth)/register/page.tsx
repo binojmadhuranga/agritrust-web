@@ -95,17 +95,16 @@ export default function RegisterPage() {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-start p-8 bg-cover bg-center bg-no-repeat"
+      className="min-h-screen flex items-center justify-start p-8 lg:p-0 bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage: `url(${step === 1 ? '/auth/register_name.png' : '/auth/register_pw.png'})`
       }}
     >
       {/* Card Container - Left Side */}
-      <div className="w-full max-w-md">
-        <RegisterCard
-          title={step === 1 ? "Create Account" : "Set Password"}
-          subtitle={step === 1 ? "Let's get started with your basic information" : "Secure your account with a strong password"}
-        >
+      <RegisterCard
+        title={step === 1 ? "Create Account" : "Set Password"}
+        subtitle={step === 1 ? "Let's get started with your basic information" : "Secure your account with a strong password"}
+      >
           {/* Error Messages */}
           {error && (
             <div className="p-3 mb-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg text-sm">
@@ -344,7 +343,6 @@ export default function RegisterPage() {
             </form>
           )}
         </RegisterCard>
-      </div>
     </div>
   );
 }
