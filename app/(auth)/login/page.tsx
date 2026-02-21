@@ -70,8 +70,8 @@ export default function LoginPage() {
     >
       {/* Card Container - Left Side */}
       <LoginCard
-        title="AgriTrust"
-        subtitle="Welcome back! Please login to your account."
+        title="Welcome back! "
+        subtitle="Please login to your account."
       >
           {/* Error Message */}
           {error && (
