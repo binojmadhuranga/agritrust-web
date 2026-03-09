@@ -8,13 +8,15 @@ export default function FarmerDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Farmer Dashboard</h1>
-          <p className="text-gray-600">Welcome to your AgriTrust dashboard</p>
-        </div>
-
-        {/* Wallet Connection Section */}
-        <div className="mb-6">
-          <WalletConnect />
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Farmer Dashboard</h1>
+              <p className="text-gray-600">Welcome to your AgriTrust dashboard</p>
+            </div>
+            <div className="ml-4">
+              <WalletConnect compact />
+            </div>
+          </div>
         </div>
 
         {/* Future sections can be added here */}

@@ -7,7 +7,11 @@ import { connectWallet, disconnectWallet, checkWalletConnection } from '@/app/fe
 import { clearWalletError } from '@/app/features/walletSlice';
 import { FaWallet, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 
-export default function WalletConnect() {
+interface WalletConnectProps {
+  compact?: boolean;
+}
+
+export default function WalletConnect({ compact = false }: WalletConnectProps) {
   const dispatch = useAppDispatch();
   const { walletAddress, isConnecting, isConnected, error } = useAppSelector(
     (state) => state.wallet
@@ -40,6 +44,52 @@ export default function WalletConnect() {
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
 
+  // Compact version for header
+  if (compact) {
+    return (
+      <div className="flex items-center gap-3">
+        {error && (
+          <div className="text-xs text-red-600 max-w-xs">
+            {error}
+          </div>
+        )}
+        
+        {!isConnected ? (
+          <button
+            onClick={handleConnectWallet}
+            disabled={isConnecting}
+            className={`
+              flex items-center gap-2 py-2 px-4 rounded-lg font-medium text-sm text-white
+              transition-all duration-200
+              ${
+                isConnecting
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700'
+              }
+            `}
+          >
+            <FaWallet className="text-base" />
+            {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+          </button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-2 rounded-lg text-sm">
+              <FaCheckCircle />
+              <code className="font-mono">{walletAddress && formatAddress(walletAddress)}</code>
+            </div>
+            <button
+              onClick={handleDisconnectWallet}
+              className="py-2 px-4 rounded-lg font-medium text-sm text-white bg-red-600 hover:bg-red-700 transition-all duration-200"
+            >
+              Disconnect
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Full version for dedicated sections
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
