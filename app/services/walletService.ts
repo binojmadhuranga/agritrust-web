@@ -63,27 +63,15 @@ export const walletService = {
         '/wallet/disconnect'
       );
       
-      // Clear wallet address from localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('walletAddress');
-      }
-      
       return response.data;
     } catch (error: any) {
       // Handle 409 (conflict) - wallet already disconnected or state mismatch
       if (error.response?.status === 409) {
-        // Clear localStorage and treat as success
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('walletAddress');
-        }
         return { message: 'Wallet disconnected successfully' };
       }
       
-      // For other errors, clear localStorage but throw error
+      // For other errors, throw error
       console.error('walletService.disconnectWallet error:', error);
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('walletAddress');
-      }
       throw error;
     }
   },
