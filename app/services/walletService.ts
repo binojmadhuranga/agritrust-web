@@ -51,9 +51,25 @@ export const walletService = {
     return null;
   },
 
-  disconnectWallet: (): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('walletAddress');
+  disconnectWallet: async (): Promise<{ message: string }> => {
+    try {
+      const response = await axiosInstance.delete<{ message: string }>(
+        '/wallet/disconnect'
+      );
+      
+      // Clear wallet address from localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('walletAddress');
+      }
+      
+      return response.data;
+    } catch (error: any) {
+      console.error('walletService.disconnectWallet error:', error);
+      // Clear localStorage even if API fails
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('walletAddress');
+      }
+      throw error;
     }
   },
 };

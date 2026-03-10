@@ -40,9 +40,16 @@ export const connectWallet = createAsyncThunk(
 // Disconnect wallet thunk
 export const disconnectWallet = createAsyncThunk(
   'wallet/disconnect',
-  async () => {
-    walletService.disconnectWallet();
-    return null;
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await walletService.disconnectWallet();
+      return response;
+    } catch (error: any) {
+      console.error('Disconnect wallet error:', error);
+      return rejectWithValue(
+        error.response?.data?.message || error.message || 'Failed to disconnect wallet'
+      );
+    }
   }
 );
 
