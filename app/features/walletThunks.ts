@@ -51,23 +51,25 @@ export const checkWalletConnection = createAsyncThunk(
   'wallet/checkConnection',
   async (_, { rejectWithValue }) => {
     try {
-      const storedAddress = walletService.getStoredWalletAddress();
+      // First, check backend for wallet address
+      const backendWallet = await walletService.getWalletAddress();
       
-      if (!storedAddress) {
-        return null;
-      }
-
-      // Verify wallet is still connected in MetaMask
-      if (window.ethereum) {
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const accounts = await provider.send('eth_accounts', []);
-        
-        if (accounts && accounts.includes(storedAddress)) {
-          return { walletAddress: storedAddress };
+      if (backendWallet && backendWallet.walletAddress) {
+        // Verify wallet is still connected in MetaMask
+        if (window.ethereum) {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const accounts = await provider.send('eth_accounts', []);
+          
+          if (accounts && accounts.includes(backendWallet.walletAddress)) {
+            return { walletAddress: backendWallet.walletAddress };
+          }
         }
+        
+        // Backend has wallet but MetaMask doesn't - return backend wallet anyway
+        return { walletAddress: backendWallet.walletAddress };
       }
 
-      // Wallet not connected anymore, clear storage
+      // No wallet on backend, clear local storage
       walletService.disconnectWallet();
       return null;
     } catch (error: any) {

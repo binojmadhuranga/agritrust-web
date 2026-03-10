@@ -24,6 +24,26 @@ export const walletService = {
     }
   },
 
+  getWalletAddress: async (): Promise<WalletConnectResponse | null> => {
+    try {
+      const response = await axiosInstance.get<WalletConnectResponse>(
+        '/wallet/address'
+      );
+      
+      // Store wallet address in localStorage if received
+      if (response.data.walletAddress) {
+        localStorage.setItem('walletAddress', response.data.walletAddress);
+        return response.data;
+      }
+      
+      return null;
+    } catch (error: any) {
+      console.error('walletService.getWalletAddress error:', error);
+      // If error (e.g., 404, not found), wallet is not connected
+      return null;
+    }
+  },
+
   getStoredWalletAddress: (): string | null => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('walletAddress');
