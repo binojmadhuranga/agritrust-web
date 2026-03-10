@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@/app/hooks/useAppDispatch';
 import { useAppSelector } from '@/app/hooks/useAppSelector';
 import { connectWallet, disconnectWallet, checkWalletConnection } from '@/app/features/walletThunks';
@@ -16,6 +16,7 @@ export default function WalletConnect({ compact = false }: WalletConnectProps) {
   const { walletAddress, isConnecting, isConnected, error } = useAppSelector(
     (state) => state.wallet
   );
+  const [showDisconnectModal, setShowDisconnectModal] = useState(false);
 
   useEffect(() => {
     // Check if wallet is already connected on component mount
@@ -37,7 +38,16 @@ export default function WalletConnect({ compact = false }: WalletConnectProps) {
   };
 
   const handleDisconnectWallet = () => {
+    setShowDisconnectModal(true);
+  };
+
+  const confirmDisconnect = () => {
     dispatch(disconnectWallet());
+    setShowDisconnectModal(false);
+  };
+
+  const cancelDisconnect = () => {
+    setShowDisconnectModal(false);
   };
 
   const formatAddress = (address: string) => {
@@ -47,45 +57,82 @@ export default function WalletConnect({ compact = false }: WalletConnectProps) {
   // Compact version for header
   if (compact) {
     return (
-      <div className="flex items-center gap-3">
-        {error && (
-          <div className="text-xs text-red-600 max-w-xs">
-            {error}
-          </div>
-        )}
-        
-        {!isConnected ? (
-          <button
-            onClick={handleConnectWallet}
-            disabled={isConnecting}
-            className={`
-              flex items-center gap-2 py-2 px-4 rounded-lg font-medium text-sm text-white
-              transition-all duration-200
-              ${
-                isConnecting
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700'
-              }
-            `}
-          >
-            <FaWallet className="text-base" />
-            {isConnecting ? 'Connecting...' : 'Connect Wallet'}
-          </button>
-        ) : (
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-2 rounded-lg text-sm">
-              <FaCheckCircle />
-              <code className="font-mono">{walletAddress && formatAddress(walletAddress)}</code>
+      <>
+        <div className="flex items-center gap-3">
+          {error && (
+            <div className="text-xs text-red-600 max-w-xs">
+              {error}
             </div>
+          )}
+          
+          {!isConnected ? (
             <button
-              onClick={handleDisconnectWallet}
-              className="py-2 px-4 rounded-lg font-medium text-sm text-white bg-red-600 hover:bg-red-700 transition-all duration-200"
+              onClick={handleConnectWallet}
+              disabled={isConnecting}
+              className={`
+                flex items-center gap-2 py-2 px-4 rounded-lg font-medium text-sm text-white
+                transition-all duration-200
+                ${
+                  isConnecting
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700'
+                }
+              `}
             >
-              Disconnect
+              <FaWallet className="text-base" />
+              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
             </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-2 rounded-lg text-sm">
+                <FaCheckCircle />
+                <code className="font-mono">{walletAddress && formatAddress(walletAddress)}</code>
+              </div>
+              <button
+                onClick={handleDisconnectWallet}
+                className="py-2 px-4 rounded-lg font-medium text-sm text-white bg-red-600 hover:bg-red-700 transition-all duration-200"
+              >
+                Disconnect
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Disconnect Confirmation Modal */}
+        {showDisconnectModal && (
+          <div className="fixed inset-0 bg-gray-300 bg-opacity-90 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0">
+                  <FaExclamationCircle className="text-3xl text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Disconnect Wallet
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Are you sure you want to disconnect your wallet?
+                  </p>
+                  <div className="flex gap-3 justify-end">
+                    <button
+                      onClick={cancelDisconnect}
+                      className="px-4 py-2 rounded-lg font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={confirmDisconnect}
+                      className="px-4 py-2 rounded-lg font-medium text-white bg-red-600 hover:bg-red-700 transition-colors"
+                    >
+                      OK
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
-      </div>
+      </>
     );
   }
 
@@ -217,6 +264,41 @@ export default function WalletConnect({ compact = false }: WalletConnectProps) {
           </li>
         </ul>
       </div>
+
+      {/* Disconnect Confirmation Modal */}
+      {showDisconnectModal && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-90 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <FaExclamationCircle className="text-3xl text-red-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Disconnect Wallet
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to disconnect your wallet?
+                </p>
+                <div className="flex gap-3 justify-end">
+                  <button
+                    onClick={cancelDisconnect}
+                    className="px-4 py-2 rounded-lg font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmDisconnect}
+                    className="px-4 py-2 rounded-lg font-medium text-white bg-red-600 hover:bg-red-700 transition-colors"
+                  >
+                    OK
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
