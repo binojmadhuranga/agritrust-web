@@ -77,7 +77,7 @@ export const checkWalletConnection = createAsyncThunk(
       }
 
       // No wallet on backend, clear local storage
-      walletService.disconnectWallet();
+      walletService.clearLocalWallet();
       return null;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to check wallet connection');

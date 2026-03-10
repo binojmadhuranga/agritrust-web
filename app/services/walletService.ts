@@ -38,8 +38,14 @@ export const walletService = {
       
       return null;
     } catch (error: any) {
-      console.error('walletService.getWalletAddress error:', error);
-      // If error (e.g., 404, not found), wallet is not connected
+      // Handle 409 (conflict) or other errors - wallet not connected or state mismatch
+      if (error.response?.status === 409 || error.response?.status === 404) {
+        // Clear localStorage for state conflicts or not found
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('walletAddress');
+        }
+      }
+      // Return null for any error - wallet is not properly connected
       return null;
     }
   },
@@ -64,12 +70,27 @@ export const walletService = {
       
       return response.data;
     } catch (error: any) {
+      // Handle 409 (conflict) - wallet already disconnected or state mismatch
+      if (error.response?.status === 409) {
+        // Clear localStorage and treat as success
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('walletAddress');
+        }
+        return { message: 'Wallet disconnected successfully' };
+      }
+      
+      // For other errors, clear localStorage but throw error
       console.error('walletService.disconnectWallet error:', error);
-      // Clear localStorage even if API fails
       if (typeof window !== 'undefined') {
         localStorage.removeItem('walletAddress');
       }
       throw error;
+    }
+  },
+
+  clearLocalWallet: (): void => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('walletAddress');
     }
   },
 };

@@ -100,7 +100,7 @@ export default function WalletConnect({ compact = false }: WalletConnectProps) {
 
         {/* Disconnect Confirmation Modal */}
         {showDisconnectModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-gray-300 bg-opacity-90 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0">
@@ -267,7 +267,7 @@ export default function WalletConnect({ compact = false }: WalletConnectProps) {
 
       {/* Disconnect Confirmation Modal */}
       {showDisconnectModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-90 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
             <div className="flex items-start space-x-3">
               <div className="flex-shrink-0">
