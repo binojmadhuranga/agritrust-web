@@ -37,10 +37,22 @@ const walletSlice = createSlice({
     });
 
     // Disconnect wallet
+    builder.addCase(disconnectWallet.pending, (state) => {
+      state.isConnecting = true;
+      state.error = null;
+    });
     builder.addCase(disconnectWallet.fulfilled, (state) => {
       state.walletAddress = null;
       state.isConnected = false;
+      state.isConnecting = false;
       state.error = null;
+    });
+    builder.addCase(disconnectWallet.rejected, (state, action) => {
+      // Even if API fails, clear the local state
+      state.walletAddress = null;
+      state.isConnected = false;
+      state.isConnecting = false;
+      state.error = action.payload as string;
     });
 
     // Check wallet connection
@@ -52,6 +64,11 @@ const walletSlice = createSlice({
         state.walletAddress = null;
         state.isConnected = false;
       }
+    });
+    builder.addCase(checkWalletConnection.rejected, (state) => {
+      // On error checking connection, clear state
+      state.walletAddress = null;
+      state.isConnected = false;
     });
   },
 });
