@@ -19,6 +19,14 @@ export const walletService = {
       
       return response.data;
     } catch (error: any) {
+      // Handle 409 (conflict) - wallet already registered on the backend for this user.
+      // Treat it as a successful connection and return the address we attempted to connect.
+      if (error.response?.status === 409) {
+        if (walletAddress) {
+          localStorage.setItem('walletAddress', walletAddress);
+        }
+        return { walletAddress };
+      }
       console.error('walletService.connectWallet error:', error);
       throw error;
     }
