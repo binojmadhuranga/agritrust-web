@@ -65,8 +65,8 @@ export const walletService = {
       
       return response.data;
     } catch (error: any) {
-      // Handle 409 (conflict) - wallet already disconnected or state mismatch
-      if (error.response?.status === 409) {
+      // Handle 404 (not found) or 409 (conflict) - wallet already disconnected or state mismatch
+      if (error.response?.status === 404 || error.response?.status === 409) {
         return { message: 'Wallet disconnected successfully' };
       }
       

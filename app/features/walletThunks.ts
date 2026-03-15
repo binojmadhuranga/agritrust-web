@@ -87,6 +87,13 @@ export const checkWalletConnection = createAsyncThunk(
   'wallet/checkConnection',
   async (_, { rejectWithValue }) => {
     try {
+      // If there is no locally stored address the user has explicitly disconnected — skip
+      // the backend call so a stale backend record cannot re-populate the state.
+      const localAddress = walletService.getStoredWalletAddress();
+      if (!localAddress) {
+        return null;
+      }
+
       // First, check backend for wallet address
       const backendWallet = await walletService.getWalletAddress();
       
