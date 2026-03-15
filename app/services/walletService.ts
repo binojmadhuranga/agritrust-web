@@ -19,6 +19,14 @@ export const walletService = {
       
       return response.data;
     } catch (error: any) {
+      // Handle 409 (conflict) - wallet already registered on the backend for this user.
+      // Treat it as a successful connection and return the address we attempted to connect.
+      if (error.response?.status === 409) {
+        if (walletAddress) {
+          localStorage.setItem('walletAddress', walletAddress);
+        }
+        return { walletAddress };
+      }
       console.error('walletService.connectWallet error:', error);
       throw error;
     }
@@ -65,8 +73,8 @@ export const walletService = {
       
       return response.data;
     } catch (error: any) {
-      // Handle 409 (conflict) - wallet already disconnected or state mismatch
-      if (error.response?.status === 409) {
+      // Handle 404 (not found) or 409 (conflict) - wallet already disconnected or state mismatch
+      if (error.response?.status === 404 || error.response?.status === 409) {
         return { message: 'Wallet disconnected successfully' };
       }
       
