@@ -14,4 +14,9 @@ export const certificateRequestService = {
     const response = await axiosInstance.post<CertificateRequest>('/certificate-requests');
     return response.data;
   },
+
+  getAllCertificateRequests: async (): Promise<CertificateRequest[]> => {
+    const response = await axiosInstance.get<CertificateRequest[]>('/certificate-requests');
+    return response.data;
+  },
 };
