@@ -9,6 +9,8 @@ export interface CertificateRequest {
   requestedAt: string;
 }
 
+export type CertificateRequestStatus = 'Approved' | 'Rejected';
+
 export const certificateRequestService = {
   createCertificateRequest: async (): Promise<CertificateRequest> => {
     const response = await axiosInstance.post<CertificateRequest>('/certificate-requests');
@@ -17,6 +19,17 @@ export const certificateRequestService = {
 
   getAllCertificateRequests: async (): Promise<CertificateRequest[]> => {
     const response = await axiosInstance.get<CertificateRequest[]>('/certificate-requests');
+    return response.data;
+  },
+
+  updateCertificateRequestStatus: async (
+    id: number,
+    status: CertificateRequestStatus
+  ): Promise<CertificateRequest> => {
+    const response = await axiosInstance.put<CertificateRequest>(
+      `/certificate-requests/${id}/status`,
+      { status }
+    );
     return response.data;
   },
 };
