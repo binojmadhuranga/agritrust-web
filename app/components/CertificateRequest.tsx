@@ -5,6 +5,7 @@ import {
   certificateRequestService,
   type CertificateRequest as CertificateRequestType,
 } from '@/app/services/certificateRequestService';
+import UpdateCertificateRequestStatus from '@/app/components/UpdateCertificateRequestStatus';
 
 const getStatusClasses = (status: string): string => {
   switch (status.toLowerCase()) {
@@ -23,6 +24,14 @@ export default function CertificateRequest() {
   const [requests, setRequests] = useState<CertificateRequestType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const handleStatusUpdated = (updatedRequest: CertificateRequestType) => {
+    setRequests((prevRequests) =>
+      prevRequests.map((request) =>
+        request.id === updatedRequest.id ? { ...request, ...updatedRequest } : request
+      )
+    );
+  };
 
   const fetchCertificateRequests = async () => {
     setIsLoading(true);
@@ -104,6 +113,9 @@ export default function CertificateRequest() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Requested At
                 </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -126,6 +138,13 @@ export default function CertificateRequest() {
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">
                     {new Date(request.requestedAt).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    <UpdateCertificateRequestStatus
+                      requestId={request.id}
+                      currentStatus={request.status}
+                      onStatusUpdated={handleStatusUpdated}
+                    />
                   </td>
                 </tr>
               ))}
