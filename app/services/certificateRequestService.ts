@@ -1,4 +1,5 @@
 import axiosInstance from './axiosConfig';
+import { blockchainService } from './blockchainService';
 
 export interface CertificateRequest {
   id: number;
@@ -9,6 +10,7 @@ export interface CertificateRequest {
   requestedAt: string;
   certificateNumber?: string | null;
   hash?: string | null;
+  transactionHash?: string | null;
 }
 
 export type CertificateRequestStatus = 'Approved' | 'Rejected';
@@ -32,6 +34,28 @@ export const certificateRequestService = {
       `/certificate-requests/${id}/status`,
       { status }
     );
-    return response.data;
+
+    const data = response.data;
+
+    // Store certificate on blockchain if approved and has certificate data
+    if (
+      status === 'Approved' &&
+      data.certificateNumber &&
+      data.hash
+    ) {
+      try {
+        const transactionHash = await blockchainService.storeCertificateHash(
+          data.certificateNumber,
+          data.hash
+        );
+        data.transactionHash = transactionHash;
+      } catch (error) {
+        console.error('Failed to store certificate on blockchain:', error);
+        // Continue even if blockchain fails - certificate API succeeded
+        throw error;
+      }
+    }
+
+    return data;
   },
 };
