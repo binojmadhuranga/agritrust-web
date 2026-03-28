@@ -7,6 +7,8 @@ export interface CertificateRequest {
   walletAddress: string;
   status: string;
   requestedAt: string;
+  certificateNumber?: string | null;
+  hash?: string | null;
 }
 
 export type CertificateRequestStatus = 'Approved' | 'Rejected';
