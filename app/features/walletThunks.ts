@@ -2,6 +2,46 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { walletService } from '../services/walletService';
 import { ethers } from 'ethers';
 
+const GANACHE_CHAIN_ID_HEX = '0x539';
+
+const ensureGanacheNetwork = async (): Promise<void> => {
+  if (!window.ethereum) {
+    throw new Error('MetaMask is not installed. Please install MetaMask to connect your wallet.');
+  }
+
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: GANACHE_CHAIN_ID_HEX }],
+    });
+  } catch (error: any) {
+    if (error?.code !== 4902) {
+      throw error;
+    }
+
+    await window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [
+        {
+          chainId: GANACHE_CHAIN_ID_HEX,
+          chainName: 'Ganache Local',
+          nativeCurrency: {
+            name: 'Ether',
+            symbol: 'ETH',
+            decimals: 18,
+          },
+          rpcUrls: ['http://127.0.0.1:7545'],
+        },
+      ],
+    });
+
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: GANACHE_CHAIN_ID_HEX }],
+    });
+  }
+};
+
 // Connect wallet thunk - handles MetaMask connection and backend API call
 export const connectWallet = createAsyncThunk(
   'wallet/connect',
@@ -31,6 +71,8 @@ export const connectWallet = createAsyncThunk(
       
       // Get accounts after permission granted
       const accounts = await provider.send('eth_requestAccounts', []);
+
+      await ensureGanacheNetwork();
       
       if (!accounts || accounts.length === 0) {
         throw new Error('No accounts found. Please unlock MetaMask and try again.');
@@ -52,6 +94,10 @@ export const connectWallet = createAsyncThunk(
       // Handle user rejection
       if (error.code === 4001 || error.code === 'ACTION_REJECTED') {
         return rejectWithValue('Connection request was rejected by user');
+      }
+
+      if (error?.code === 4902) {
+        return rejectWithValue('Ganache network is not configured in MetaMask. Add it and try again.');
       }
       
       return rejectWithValue(
