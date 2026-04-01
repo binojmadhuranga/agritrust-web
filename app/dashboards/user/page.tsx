@@ -88,12 +88,12 @@ export default function UserDashboard() {
 
             {!isFarmersLoading && !farmersError && farmers.length > 0 && (
               <div className="space-y-3 max-h-[32rem] overflow-y-auto pr-1">
-                {farmers.map((farmer) => {
+                {farmers.map((farmer, index) => {
                   const isSelected = selectedFarmerId === farmer.id;
 
                   return (
                     <button
-                      key={farmer.id}
+                      key={`${farmer.id}-${index}`}
                       onClick={() => setSelectedFarmerId(farmer.id)}
                       className={`w-full text-left border rounded-lg p-3 transition-colors ${
                         isSelected
