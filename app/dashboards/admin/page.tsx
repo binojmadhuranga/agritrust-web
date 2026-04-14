@@ -126,12 +126,13 @@ export default function AdminDashboard() {
               </thead>
 
               <tbody className="divide-y divide-gray-100">
-                {users.map((user) => {
+                {users.map((user, index) => {
                   const isDeleting = deletingUserId === user.id;
                   const isConfirmingDelete = confirmDeleteUserId === user.id;
+                  const rowKey = `${user.id}-${user.email}-${user.createdAt}-${index}`;
 
                   return (
-                    <tr key={user.id}>
+                    <tr key={rowKey}>
                       <td className="px-4 py-3 text-gray-900 font-medium">{user.fullName}</td>
                       <td className="px-4 py-3 text-gray-700">{user.email}</td>
                       <td className="px-4 py-3 text-gray-700">{user.role}</td>
